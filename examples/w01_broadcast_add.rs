@@ -15,7 +15,7 @@ fn main() -> Result<()> {
     println!("output: {}", output);
 
     let error_bias = Tensor::new(&[1, 2], &device)?;
-    if let Err(error) = output.broadcast_add(&error_bias) {
+    if let Err(error) = input.broadcast_add(&error_bias) {
         println!("{:?}", error)
     }
     Ok(())

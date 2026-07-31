@@ -21,5 +21,18 @@ fn broadcast_add_produces_expected_output() -> Result<()> {
 
     let expected_result = Tensor::new(&[[11, 22, 33], [14, 25, 36]], &device)?;
     assert_eq!(output.to_vec2::<i32>()?, expected_result.to_vec2::<i32>()?);
+    assert_eq!(output.dims(), &[2, 3]);
+    Ok(())
+}
+
+#[test]
+fn broadcast_add_rejects_incompatible_shape() -> Result<()> {
+    let device = Device::Cpu;
+    let input = Tensor::new(&[[1, 2, 3], [4, 5, 6]], &device)?;
+    let wrong_bias = Tensor::new(&[10, 20], &device)?;
+
+    let result = input.broadcast_add(&wrong_bias);
+
+    assert!(result.is_err());
     Ok(())
 }
