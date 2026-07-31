@@ -44,7 +44,10 @@ pub fn print_summary(summary: &ModelSummary, limit: usize) {
     println!("tensor count: {}", summary.tensors.len());
     println!("total elements: {}", summary.total_elements);
     println!();
-    println!("{:<64} {:<10} {:<24} {:>14}", "name", "dtype", "shape", "elements");
+    println!(
+        "{:<64} {:<10} {:<24} {:>14}",
+        "name", "dtype", "shape", "elements"
+    );
     println!("{}", "-".repeat(116));
 
     for tensor in summary.tensors.iter().take(limit) {
@@ -58,7 +61,10 @@ pub fn print_summary(summary: &ModelSummary, limit: usize) {
     }
 
     if summary.tensors.len() > limit {
-        println!("\n... {} more tensors (use --limit to show more)", summary.tensors.len() - limit);
+        println!(
+            "\n... {} more tensors (use --limit to show more)",
+            summary.tensors.len() - limit
+        );
     }
 }
 
@@ -67,7 +73,10 @@ fn truncate(value: &str, max_chars: usize) -> String {
         return value.to_owned();
     }
 
-    let mut result = value.chars().take(max_chars.saturating_sub(1)).collect::<String>();
+    let mut result = value
+        .chars()
+        .take(max_chars.saturating_sub(1))
+        .collect::<String>();
     result.push('…');
     result
 }

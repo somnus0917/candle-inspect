@@ -3,8 +3,7 @@ use std::path::PathBuf;
 use anyhow::Result;
 use candle_inspect::{
     device::{create_device, DeviceArg},
-    inspect,
-    tensor_demo,
+    inspect, tensor_demo,
 };
 use clap::{Parser, Subcommand};
 
