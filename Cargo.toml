@@ -1,0 +1,18 @@
+[package]
+name = "candle-inspect"
+version = "0.1.0"
+edition = "2021"
+description = "A learning-first CLI for inspecting safetensors models with Candle"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[features]
+default = []
+metal = ["candle-core/metal", "candle-nn/metal"]
+cuda = ["candle-core/cuda", "candle-nn/cuda"]
+
+[dependencies]
+anyhow = "1"
+candle-core = { version = "0.11.0", default-features = false }
+candle-nn = { version = "0.11.0", default-features = false }
+clap = { version = "4", features = ["derive"] }
