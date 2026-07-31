@@ -16,7 +16,11 @@ fn main() -> Result<()> {
 
     let error_bias = Tensor::new(&[1, 2], &device)?;
     if let Err(error) = input.broadcast_add(&error_bias) {
-        println!("{:?}", error)
+        println!("expected broadcast error: {:?}", error)
+    }
+    match input.broadcast_add(&error_bias) {
+        Ok(tensor) => println!("input after broadcast add is : {}", tensor),
+        Err(error) => println!("broadcast add error: {:?}", error),
     }
     Ok(())
 }
