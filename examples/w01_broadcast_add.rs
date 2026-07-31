@@ -7,11 +7,16 @@ fn main() -> Result<()> {
     let bias = Tensor::new(&[10, 20, 30], &device)?;
     let output = input.broadcast_add(&bias)?;
     println!(
-        "{:?},{:?},{:?}",
+        "input shape: {:?}\nbias shape: {:?}\noutput shape: {:?}",
         input.shape(),
         bias.shape(),
         output.shape()
     );
-    println!("{}", output);
+    println!("output: {}", output);
+
+    let error_bias = Tensor::new(&[1, 2], &device)?;
+    if let Err(error) = output.broadcast_add(&error_bias) {
+        println!("{:?}", error)
+    }
     Ok(())
 }
