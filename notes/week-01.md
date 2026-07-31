@@ -23,3 +23,19 @@
 **What the error message actually meant:**
 
 **One question worth checking in Candle source code:**
+
+## Broadcast add
+
+### 输入 shape
+[[1,2,3],[4,5,6]]
+[10,20,30]
+### 输出 shape
+[[11,22,33],[14,25,36]]
+
+### 为什么 [2, 3] 和 [3] 可以相加
+因为 [2, 3] 的维度可以广播到 [3]
+### 为什么 [2, 3] 和 [2] 不能直接广播
+因为 [2, 3] 的维度不能广播到 [2]
+
+### 本次遇到的 Rust 问题
+🈚️
