@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{ensure, Result};
 use candle_core::{Device, Tensor};
 fn main() -> Result<()> {
     let device = &Device::Cpu;
@@ -10,15 +10,22 @@ fn main() -> Result<()> {
         device,
     )?;
     println!("hwc shape :{:?}", hwc.shape());
-    println!("hwc :{:?}", hwc.to_vec3::<f32>().unwrap());
+    println!("hwc :{:?}", hwc.to_vec3::<f32>()?);
     let chw = hwc.permute((2, 0, 1))?;
     println!("chw shape :{:?}", chw.shape());
+    println!("chw :{:?}", chw.to_vec3::<f32>()?);
     let nchw = chw.unsqueeze(0)?;
     println!("nchw shape :{:?}", nchw.shape());
     let new_chw = nchw.squeeze(0)?;
     println!("new_chw shape :{:?}", new_chw.shape());
-    let new_hcw = new_chw.permute((1, 2, 0))?;
-    println!("new_hcw shape :{:?}", new_hcw.shape());
-    println!("new_hcw :{:?}", new_hcw.to_vec3::<f32>().unwrap());
+    let new_hwc = new_chw.permute((1, 2, 0))?;
+    println!("new_hwc shape :{:?}", new_hwc.shape());
+    println!("new_hwc :{:?}", new_hwc.to_vec3::<f32>()?);
+
+    ensure!(hwc.dims() == new_hwc.dims(), "hwc.dims() != new_hwc.dims()");
+    ensure!(
+        hwc.to_vec3::<f32>()? == new_hwc.to_vec3::<f32>()?,
+        "hwc.to_vec3::<f32>()? != new_hwc.to_vec3::<f32>()?"
+    );
     Ok(())
 }
