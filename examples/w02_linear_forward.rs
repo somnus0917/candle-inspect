@@ -29,5 +29,15 @@ fn main() -> Result<()> {
     )?;
     ensure!(output.shape() == expected_output.shape());
     ensure!(output.to_vec2::<f32>()? == expected_output.to_vec2::<f32>()?);
+
+    let error_input = Tensor::from_vec(vec![1.0f32, 2.0, 3.0, 4.0], (2, 2), &device)?;
+    let error_output = error_input
+        .matmul(&transposed_weight)
+        .and_then(|t| t.broadcast_add(&bias));
+    match error_output {
+        Ok(tensor) => println!("output is :{:?}", tensor),
+        Err(e) => println!("error!!!{:?}", e),
+    }
+
     Ok(())
 }
