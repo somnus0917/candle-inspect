@@ -38,8 +38,29 @@ fn main() -> Result<()> {
         Ok(tensor) => println!("output is :{:?}", tensor),
         Err(e) => println!("error!!!{:?}", e),
     }
-    let linear_input = Linear::new(weight, Some(bias));
+    let linear_input = Linear::new(weight.clone(), Some(bias.clone()));
     let module_output = linear_input.forward(&input)?;
     println!("module output : {:?}", module_output.to_vec2::<f32>()?);
+
+    ensure!(module_output.shape() == output.shape());
+    ensure!(module_output.to_vec2::<f32>()? == output.to_vec2::<f32>()?);
+
+    let single_output = input.narrow(0, 0, 1).and_then(|single_input| {
+        let single_linear = Linear::new(weight.clone(), Some(bias.clone()));
+        single_linear.forward(&single_input)
+    });
+
+    match single_output {
+        Ok(tensor) => {
+            println!(
+                "signle output shape :{:?},single output :{:?}",
+                tensor.shape(),
+                tensor.to_vec2::<f32>()
+            );
+        }
+        Err(e) => {
+            println!("error:{:?}", e)
+        }
+    }
     Ok(())
 }
