@@ -33,12 +33,8 @@ fn main() -> Result<()> {
         output2.shape()
     );
     ensure!(output2.to_vec2::<f32>()? == vec![[2.0f32, 3.0], [0.0, 2.0]]);
-    let is_positive = output_relu
-        .to_vec2::<f32>()?
-        .iter()
-        .flatten()
-        .all(|&x| x >= 0.0f32);
-    ensure!(is_positive);
+    let min_val = output_relu.min_all()?.to_scalar::<f32>()?;
+    ensure!(min_val >= 0.0f32);
 
     Ok(())
 }
