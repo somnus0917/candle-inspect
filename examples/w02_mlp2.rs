@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{ensure, Result};
 use candle_core::{Device, Tensor};
 use candle_nn::{Linear, Module};
 fn main() -> Result<()> {
@@ -32,6 +32,13 @@ fn main() -> Result<()> {
         output_relu.shape(),
         output2.shape()
     );
+    ensure!(output2.to_vec2::<f32>()? == vec![[2.0f32, 3.0], [0.0, 2.0]]);
+    let is_positive = output_relu
+        .to_vec2::<f32>()?
+        .iter()
+        .flatten()
+        .all(|&x| x >= 0.0f32);
+    ensure!(is_positive);
 
     Ok(())
 }
