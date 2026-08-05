@@ -48,6 +48,8 @@ fn main() -> anyhow::Result<()> {
     )?;
     let output = my_module.forward(&input)?;
     println!("output:{:?}", output.to_vec2::<f32>()?);
+    ensure!(input.dims() == [2, 3]);
+    ensure!(output.dims() == [2, 2]);
     ensure!(output.to_vec2::<f32>()? == [[2.0f32, 3.0f32], [0.0f32, 2.0f32]]);
     Ok(())
 }
