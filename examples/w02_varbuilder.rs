@@ -1,6 +1,6 @@
 use anyhow::ensure;
-use candle_core::{Device, Tensor};
-use candle_nn::{linear, Linear, Module, VarBuilder};
+use candle_core::{Context, Device, Tensor};
+use candle_nn::{linear, Linear, Module, VarBuilder, VarMap};
 struct Mlp {
     pub layer1: Linear,
     pub layer2: Linear,
@@ -30,7 +30,8 @@ impl Module for Mlp {
 }
 fn main() -> anyhow::Result<()> {
     let device = Device::Cpu;
-    let vb = VarBuilder::zeros(candle_core::DType::F32, &device);
+    let varmap = VarMap::new();
+    let vb = VarBuilder::from_varmap(&varmap, candle_core::DType::F32, &device);
     let input = Tensor::from_vec(vec![1.0f32, 2.0, 3.0, -1.0, 1.0, 2.0], (2, 3), &device)?;
     let m = Mlp::new(3, 4, 2, vb)?;
     let output1 = m.forward(&input)?;
@@ -39,11 +40,11 @@ fn main() -> anyhow::Result<()> {
     println!("output second time:{:?}", output2.dims());
 
     println!(
-        "weight:: layer1 shape:{:?}, layer2 shape:{:?}\nweight:: layer1 shape:{:?}, layer2 shape:{:?}",
+        "weight:: layer1 shape:{:?}, layer2 shape:{:?}\nbias:: layer1 shape:{:?}, layer2 shape:{:?}",
         m.layer1.weight().dims(),
         m.layer2.weight().dims(),
-        m.layer1.bias().unwrap().dims(),
-        m.layer2.bias().unwrap().dims(),
+        m.layer1.bias().context("error")?.dims(),
+        m.layer2.bias().context("error")?.dims(),
     );
     ensure!(output1.to_vec2::<f32>()? == output2.to_vec2::<f32>()?);
 
